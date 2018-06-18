@@ -3,6 +3,9 @@ module QueLam.Core where
 
 -- Implementation of Suzuki, Kiselyov and Kameyama paper
 
+infix 5 =%
+infixl 2 @%
+
 class Symantics repr where
   type Obs repr :: * -> *
   int    :: Int    -> repr Int
@@ -12,7 +15,7 @@ class Symantics repr where
   ($$)   :: repr (a -> b) -> repr a -> repr b
   for    :: repr [a] -> (repr a -> repr [b]) -> repr [b]
   where' :: repr Bool -> repr [a] -> repr [a]
-  yeild  :: repr a -> repr [a]
+  yield  :: repr a -> repr [a]
   nil    :: repr [a]
   (@%)   :: repr [a] -> repr [a] -> repr [a]
   (=%)   :: repr a -> repr a -> repr Bool
