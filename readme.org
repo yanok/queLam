@@ -1,0 +1,2 @@
+
+* QueΛ: implementation of "Finally, Safely-Extensible and Efficient Language-Integrated Query" paper
