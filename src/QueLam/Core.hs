@@ -18,7 +18,7 @@ infix 5 =%
 infixl 2 @%
 infixl 8 .%
 
-class HasTable schema (t :: Symbol) r | schema t -> r
+class HasTable schema (t :: Symbol) (r :: [*]) | schema t -> r
 
 class Symantics repr where
   type Obs repr :: * -> *
@@ -35,6 +35,6 @@ class Symantics repr where
   (=%)   :: repr schema a -> repr schema a -> repr schema Bool
   (.%)   :: Has l rs t => repr schema (Rec rs) -> FldProxy l -> repr schema t
   rnil'  :: repr schema (Rec '[])
-  (&%)   :: forall l schema t flds. (l := repr schema t) -> repr schema (Rec flds) -> repr schema (Record (l := t ': flds))
-  table  :: HasTable schema t r => Proxy t -> repr schema [r]
+  (&%)   :: (l := repr schema t) -> repr schema (Rec flds) -> repr schema (Record (l := t ': flds))
+  table  :: HasTable schema t r => Proxy t -> repr schema [Record r]
   observe :: repr schema a -> Obs repr a

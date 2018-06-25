@@ -16,9 +16,9 @@ import           SuperRecord
 q2 ::
   forall repr schema prod order.
   ( Symantics repr
-  , HasTable schema "products" (Rec prod)
+  , HasTable schema "products" prod
   , Has "oid" order Int
-  , Has "pid" prod Int)
+  , Has "pid" (Sort prod) Int)
   => repr schema (Rec order -> [Record '["pid" := Int]])
 q2 = lam $ \o ->
   for (table $ Proxy @ "products") $ \p ->
