@@ -13,10 +13,11 @@ import           Data.Proxy
 import           QueLam.Core
 import           SuperRecord
 
-q1
-    :: forall repr schema order.
-       (Symantics repr, HasTable schema "orders" (Rec order), Has "oid" order Int)
-    => repr schema (Int -> [Rec order])
+q1 ::
+  ( Symantics repr
+  , HasTable schema "orders" (Rec order)
+  , Has "oid" order Int)
+  => repr schema (Int -> [Rec order])
 q1 = lam $ \xoid ->
   for (table $ Proxy @ "orders") $ \o ->
     where' (o .% #oid =% xoid) $
