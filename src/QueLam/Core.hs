@@ -1,10 +1,11 @@
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE FlexibleContexts      #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE RankNTypes            #-}
-{-# LANGUAGE TypeFamilies          #-}
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE DataKinds              #-}
+{-# LANGUAGE FlexibleContexts       #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE MultiParamTypeClasses  #-}
+{-# LANGUAGE RankNTypes             #-}
+{-# LANGUAGE ScopedTypeVariables    #-}
+{-# LANGUAGE TypeFamilies           #-}
+{-# LANGUAGE TypeOperators          #-}
 module QueLam.Core where
 
 import           Data.Proxy
@@ -17,7 +18,7 @@ infix 5 =%
 infixl 2 @%
 infixl 8 .%
 
-class HasTable schema (t :: Symbol) r
+class HasTable schema (t :: Symbol) r | schema t -> r
 
 class Symantics repr where
   type Obs repr :: * -> *
