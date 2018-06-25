@@ -1,31 +1,35 @@
-{-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE TypeFamilies          #-}
 module QueLam.Core where
 
+import           Data.Proxy
 import           GHC.TypeLits
+import           SuperRecord
 
 -- Implementation of Suzuki, Kiselyov and Kameyama paper
 
 infix 5 =%
 infixl 2 @%
+infixl 8 .%
 
-class HasTable db (t :: Symbol) r
+class HasTable schema (t :: Symbol) r
 
 class Symantics repr where
   type Obs repr :: * -> *
-  int    :: Int    -> repr Int
-  bool   :: Bool   -> repr Bool
-  string :: String -> repr String
-  lam    :: (repr a -> repr b) -> repr (a -> b)
-  ($$)   :: repr (a -> b) -> repr a -> repr b
-  for    :: repr [a] -> (repr a -> repr [b]) -> repr [b]
-  where' :: repr Bool -> repr [a] -> repr [a]
-  yield  :: repr a -> repr [a]
-  nil    :: repr [a]
-  (@%)   :: repr [a] -> repr [a] -> repr [a]
-  (=%)   :: repr a -> repr a -> repr Bool
-  table  :: forall db t r. HasTable db t r => repr [r]
-  observe :: repr a -> Obs repr a
+  int    :: Int    -> repr schema Int
+  bool   :: Bool   -> repr schema Bool
+  string :: String -> repr schema String
+  lam    :: (repr schema a -> repr schema b) -> repr schema (a -> b)
+  ($$)   :: repr schema (a -> b) -> repr schema a -> repr schema b
+  for    :: repr schema [a] -> (repr schema a -> repr schema [b]) -> repr schema [b]
+  where' :: repr schema Bool -> repr schema [a] -> repr schema [a]
+  yield  :: repr schema a -> repr schema [a]
+  nil    :: repr schema [a]
+  (@%)   :: repr schema [a] -> repr schema [a] -> repr schema [a]
+  (=%)   :: repr schema a -> repr schema a -> repr schema Bool
+  (.%)   :: Has l rs t => repr schema (Rec rs) -> FldProxy l -> repr schema t
+  table  :: HasTable schema t r => Proxy t -> repr schema [r]
+  observe :: repr schema a -> Obs repr a
