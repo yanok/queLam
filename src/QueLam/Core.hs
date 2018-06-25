@@ -1,8 +1,10 @@
+{-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module QueLam.Core where
 
 import           Data.Proxy
@@ -31,5 +33,7 @@ class Symantics repr where
   (@%)   :: repr schema [a] -> repr schema [a] -> repr schema [a]
   (=%)   :: repr schema a -> repr schema a -> repr schema Bool
   (.%)   :: Has l rs t => repr schema (Rec rs) -> FldProxy l -> repr schema t
+  rnil'  :: repr schema (Rec '[])
+  (&%)   :: forall l schema t flds. (l := repr schema t) -> repr schema (Rec flds) -> repr schema (Record (l := t ': flds))
   table  :: HasTable schema t r => Proxy t -> repr schema [r]
   observe :: repr schema a -> Obs repr a
