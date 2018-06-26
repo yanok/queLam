@@ -17,6 +17,8 @@ import           SuperRecord
 infix 5 =%
 infixl 2 @%
 infixl 8 .%
+infixr 2 &%
+infixl 7 *%
 
 class HasTable schema (t :: Symbol) (r :: [*]) | schema t -> r
 
@@ -33,6 +35,7 @@ class Symantics repr where
   nil    :: repr schema [a]
   (@%)   :: repr schema [a] -> repr schema [a] -> repr schema [a]
   (=%)   :: repr schema a -> repr schema a -> repr schema Bool
+  (*%)   :: Num a => repr schema a -> repr schema a -> repr schema a
   (.%)   :: Has l rs t => repr schema (Rec rs) -> FldProxy l -> repr schema t
   rnil'  :: repr schema (Rec '[])
   (&%)   :: (l := repr schema t) -> repr schema (Rec flds) -> repr schema (Record (l := t ': flds))
