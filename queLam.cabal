@@ -1,0 +1,64 @@
+-- This file has been generated from package.yaml by hpack version 0.21.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 849bacbaadc0ee5c0654d86b1074f99e94426d3fa24e7641e963d71a016ebebe
+
+name:           queLam
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/yanok/queLam#readme>
+homepage:       https://github.com/yanok/queLam#readme
+bug-reports:    https://github.com/yanok/queLam/issues
+author:         Ilya Yanok
+maintainer:     ilya.yanok@gmail.com
+copyright:      Copyright: (c) 2016 Ilya Yanok
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+source-repository head
+  type: git
+  location: https://github.com/yanok/queLam
+
+library
+  exposed-modules:
+      Lib
+      QueLam.Core
+      QueLam.R
+      QueLam.Example.Q1
+      QueLam.Example.Q2
+  other-modules:
+      Paths_queLam
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5,
+      superrecord,
+      constraints
+  default-language: Haskell2010
+
+executable queLam-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_queLam
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , queLam
+  default-language: Haskell2010
+
+test-suite queLam-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_queLam
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , queLam
+  default-language: Haskell2010
