@@ -19,8 +19,8 @@ import QueLam.Example.Q2
 q3 ::
   forall repr schema prod order.
   ( Symantics repr
-  , HasTable schema "orders" order
-  , HasTable schema "products" prod
+  , Has "orders" schema order
+  , Has "products" schema prod
   , Has "oid" (Sort order) Int
   , Has "qty" (Sort order) Int
   , Has "pid" (Sort prod) Int

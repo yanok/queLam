@@ -16,7 +16,7 @@ import           SuperRecord
 q2 ::
   forall repr schema prod order.
   ( Symantics repr
-  , HasTable schema "products" prod
+  , Has "products" schema prod
   , Has "oid" order Int
   , Has "qty" order Int
   , Has "pid" (Sort prod) Int
@@ -24,6 +24,6 @@ q2 ::
   , Has "price" (Sort prod) Int)
   => Handle repr schema -> repr schema (Rec order -> [Record '["pid" := Int, "name" := String, "sale" := Int]])
 q2 h = lam $ \o ->
-  for (table h $ Proxy @ "products") $ \p ->
+  for (table h #products) $ \p ->
     where' (p .% #pid =% o .% #oid) $
       yield (#pid := p .% #pid &% #name := p .% #name &% #sale := p .% #price *% o .% #qty &% rnil')

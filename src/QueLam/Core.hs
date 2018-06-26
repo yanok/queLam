@@ -20,11 +20,9 @@ infixl 8 .%
 infixr 2 &%
 infixl 7 *%
 
-class HasTable schema (t :: Symbol) (r :: [*]) | schema t -> r
-
 class Symantics repr where
   type Obs repr :: * -> *
-  type Handle repr :: * -> *
+  type Handle repr (schema :: [(Symbol, [*])]) :: *
   int    :: Int    -> repr schema Int
   bool   :: Bool   -> repr schema Bool
   string :: String -> repr schema String
@@ -47,7 +45,7 @@ class Symantics repr where
     , KeyDoesNotExist l flds
     , RecCopy flds flds sortedFlds) =>
     (l := repr schema t) -> repr schema (Rec flds) -> repr schema (Rec sortedFlds)
-  table  :: HasTable schema t r => Handle repr schema -> Proxy t -> repr schema [Record r]
+  table  :: Has t schema r => Handle repr schema -> FldProxy t -> repr schema [Record r]
   observe :: repr schema a -> Obs repr a
 
 compose :: Symantics repr => repr schema ((a -> [b]) -> (b -> [c]) -> (a -> [c]))
