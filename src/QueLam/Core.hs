@@ -24,6 +24,7 @@ class HasTable schema (t :: Symbol) (r :: [*]) | schema t -> r
 
 class Symantics repr where
   type Obs repr :: * -> *
+  type Handle repr :: * -> *
   int    :: Int    -> repr schema Int
   bool   :: Bool   -> repr schema Bool
   string :: String -> repr schema String
@@ -46,7 +47,7 @@ class Symantics repr where
     , KeyDoesNotExist l flds
     , RecCopy flds flds sortedFlds) =>
     (l := repr schema t) -> repr schema (Rec flds) -> repr schema (Rec sortedFlds)
-  table  :: HasTable schema t r => Proxy t -> repr schema [Record r]
+  table  :: HasTable schema t r => Handle repr schema -> Proxy t -> repr schema [Record r]
   observe :: repr schema a -> Obs repr a
 
 compose :: Symantics repr => repr schema ((a -> [b]) -> (b -> [c]) -> (a -> [c]))

@@ -26,5 +26,5 @@ q3 ::
   , Has "pid" (Sort prod) Int
   , Has "name" (Sort prod) String
   , Has "price" (Sort prod) Int)
-  => repr schema (Int -> [Record '["pid" := Int, "name" := String, "sale" := Int]])
-q3 = compose $$ q1 $$ q2
+  => Handle repr schema -> repr schema (Int -> [Record '["pid" := Int, "name" := String, "sale" := Int]])
+q3 h = compose $$ q1 h $$ q2 h

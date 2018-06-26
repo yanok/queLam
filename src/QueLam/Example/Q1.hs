@@ -17,8 +17,8 @@ q1 ::
   ( Symantics repr
   , HasTable schema "orders" order
   , Has "oid" (Sort order) Int) -- need to say Sort...
-  => repr schema (Int -> [Record order])
-q1 = lam $ \xoid ->
-  for (table $ Proxy @ "orders") $ \o ->
+  => Handle repr schema -> repr schema (Int -> [Record order])
+q1 h = lam $ \xoid ->
+  for (table h $ Proxy @ "orders") $ \o ->
     where' (o .% #oid =% xoid) $
       yield o

@@ -22,8 +22,8 @@ q2 ::
   , Has "pid" (Sort prod) Int
   , Has "name" (Sort prod) String
   , Has "price" (Sort prod) Int)
-  => repr schema (Rec order -> [Record '["pid" := Int, "name" := String, "sale" := Int]])
-q2 = lam $ \o ->
-  for (table $ Proxy @ "products") $ \p ->
+  => Handle repr schema -> repr schema (Rec order -> [Record '["pid" := Int, "name" := String, "sale" := Int]])
+q2 h = lam $ \o ->
+  for (table h $ Proxy @ "products") $ \p ->
     where' (p .% #pid =% o .% #oid) $
       yield (#pid := p .% #pid &% #name := p .% #name &% #sale := p .% #price *% o .% #qty &% rnil')
