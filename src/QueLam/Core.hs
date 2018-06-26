@@ -38,7 +38,14 @@ class Symantics repr where
   (*%)   :: Num a => repr schema a -> repr schema a -> repr schema a
   (.%)   :: Has l rs t => repr schema (Rec rs) -> FldProxy l -> repr schema t
   rnil'  :: repr schema (Rec '[])
-  (&%)   :: (l := repr schema t) -> repr schema (Rec flds) -> repr schema (Record (l := t ': flds))
+  (&%)   ::
+    ( RecSize flds ~ s
+    , sortedFlds ~ Sort ((l := t) ': flds)
+    , KnownNat s
+    , KnownNat (RecVecIdxPos l sortedFlds)
+    , KeyDoesNotExist l flds
+    , RecCopy flds flds sortedFlds) =>
+    (l := repr schema t) -> repr schema (Rec flds) -> repr schema (Rec sortedFlds)
   table  :: HasTable schema t r => Proxy t -> repr schema [Record r]
   observe :: repr schema a -> Obs repr a
 
