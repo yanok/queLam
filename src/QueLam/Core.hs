@@ -38,3 +38,6 @@ class Symantics repr where
   (&%)   :: (l := repr schema t) -> repr schema (Rec flds) -> repr schema (Record (l := t ': flds))
   table  :: HasTable schema t r => Proxy t -> repr schema [Record r]
   observe :: repr schema a -> Obs repr a
+
+compose :: Symantics repr => repr schema ((a -> [b]) -> (b -> [c]) -> (a -> [c]))
+compose = lam $ \q -> lam $ \r -> lam $ \x -> for (q $$ x) $ \y -> r $$ y
