@@ -34,7 +34,7 @@ class Symantics repr where
   yield  :: repr schema a -> repr schema [a]
   nil    :: repr schema [a]
   (@%)   :: repr schema [a] -> repr schema [a] -> repr schema [a]
-  (=%)   :: repr schema a -> repr schema a -> repr schema Bool
+  (=%)   :: Eq a => repr schema a -> repr schema a -> repr schema Bool
   (*%)   :: Num a => repr schema a -> repr schema a -> repr schema a
   (.%)   :: Has l rs t => repr schema (Rec rs) -> FldProxy l -> repr schema t
   rnil'  :: repr schema (Rec '[])
