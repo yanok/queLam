@@ -18,9 +18,12 @@ q2 ::
   ( Symantics repr
   , HasTable schema "products" prod
   , Has "oid" order Int
-  , Has "pid" (Sort prod) Int)
-  => repr schema (Rec order -> [Record '["pid" := Int]])
+  , Has "qty" order Int
+  , Has "pid" (Sort prod) Int
+  , Has "name" (Sort prod) String
+  , Has "price" (Sort prod) Int)
+  => repr schema (Rec order -> [Record '["pid" := Int, "name" := String, "sale" := Int]])
 q2 = lam $ \o ->
   for (table $ Proxy @ "products") $ \p ->
     where' (p .% #pid =% o .% #oid) $
-      yield ((#pid := (p .% #pid)) &% rnil')
+      yield (#pid := p .% #pid &% #name := p .% #name &% #sale := p .% #price *% o .% #qty &% rnil')
