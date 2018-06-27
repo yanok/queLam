@@ -28,6 +28,8 @@ library
       QueLam.R
       QueLam.Example.Q1
       QueLam.Example.Q2
+      QueLam.Example.OrderDB
+      QueLam.Example.TestQ1
   other-modules:
       Paths_queLam
   hs-source-dirs:
