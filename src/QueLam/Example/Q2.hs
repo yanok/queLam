@@ -16,7 +16,7 @@ import           SuperRecord
 q2 ::
   forall repr schema prod order.
   ( Symantics repr
-  , Has "products" schema prod
+  , HasT "products" schema prod
   , Has "oid" order Int
   , Has "qty" order Int
   , Has "pid" (Sort prod) Int

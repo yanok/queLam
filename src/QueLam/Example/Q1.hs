@@ -15,7 +15,7 @@ import           SuperRecord
 
 q1 ::
   ( Symantics repr
-  , Has "orders" schema order
+  , HasT "orders" schema order
   , Has "oid" (Sort order) Int) -- need to say Sort...
   => Handle repr schema -> repr schema (Int -> [Record order])
 q1 h = lam $ \xoid ->

@@ -52,7 +52,7 @@ instance Symantics R where
   (R e) .% l = R $ get l e
   rnil' = R rnil
   (l := (R x)) &% (R r) = R (l := x & r)
-  table  :: forall t schema r . Has t schema r => Handle R schema -> FldProxy t -> R schema [Record r]
-  table h t = R $ withDict (unsafeCoerce (Dict :: Dict (Has t schema r)) :: Dict (Has t (Sort (DB' schema)) [Record r]))
+  table  :: forall t schema r . HasT t schema r => Handle R schema -> FldProxy t -> R schema [Record r]
+  table h t = R $ withDict (unsafeCoerce (Dict :: Dict (HasT t schema r)) :: Dict (Has t (Sort (DB' schema)) [Record r]))
             $ get t h
   observe = coerce

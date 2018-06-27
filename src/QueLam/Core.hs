@@ -1,3 +1,4 @@
+{-# LANGUAGE ConstraintKinds        #-}
 {-# LANGUAGE DataKinds              #-}
 {-# LANGUAGE FlexibleContexts       #-}
 {-# LANGUAGE FunctionalDependencies #-}
@@ -13,6 +14,22 @@ import           GHC.TypeLits
 import           SuperRecord
 
 -- Implementation of Suzuki, Kiselyov and Kameyama paper
+type family SchemaIdx (t :: Symbol) (schema :: [(Symbol, [*])]) :: Nat where
+  SchemaIdx t ('(t, r) ': rs) = 0
+  SchemaIdx t1 ('(t2, r) ': rs) = SchemaIdx t1 rs
+
+type family SchemaSize (schema :: [(Symbol, [*])]) :: Nat where
+  SchemaSize '[] = 0
+  SchemaSize (_ ': rs) = SchemaSize rs
+
+type family SchemaTys (t :: Symbol) (schema :: [(Symbol, [*])]) :: [*] where
+  SchemaTys t ('(t, r) ': rs) = r
+  SchemaTys t1 ('(t2, r) ': rs) = SchemaTys t1 rs
+
+type HasT t schema r =
+  ( SchemaTys t schema ~ r
+  , KnownNat (SchemaSize schema)
+  , KnownNat (SchemaIdx t schema))
 
 infix 5 =%
 infixl 2 @%
@@ -45,7 +62,7 @@ class Symantics repr where
     , KeyDoesNotExist l flds
     , RecCopy flds flds sortedFlds) =>
     (l := repr schema t) -> repr schema (Rec flds) -> repr schema (Rec sortedFlds)
-  table  :: Has t schema r => Handle repr schema -> FldProxy t -> repr schema [Record r]
+  table  :: HasT t schema r => Handle repr schema -> FldProxy t -> repr schema [Record r]
   observe :: repr schema a -> Obs repr a
 
 compose :: Symantics repr => repr schema ((a -> [b]) -> (b -> [c]) -> (a -> [c]))
