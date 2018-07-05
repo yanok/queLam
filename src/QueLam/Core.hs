@@ -47,7 +47,7 @@ infixr 2 &%
 infixl 7 *%
 
 class Symantics repr where
-  type Obs repr :: * -> *
+  type Obs repr a :: *
   type Handle repr (schema :: [(Symbol, [*])]) :: *
   int    :: Int    -> repr schema Int
   bool   :: Bool   -> repr schema Bool

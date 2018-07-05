@@ -33,7 +33,7 @@ type DB schema = Record (DB' schema)
 -- recSizeOfDB = undefined
 
 instance Symantics R where
-  type Obs R = Identity
+  type Obs R a = a
   type Handle R schema = DB schema
   int i = R i
   bool b = R b
