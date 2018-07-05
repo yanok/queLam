@@ -26,8 +26,10 @@ library
       Lib
       QueLam.Core
       QueLam.R
+      QueLam.P
       QueLam.Example.Q1
       QueLam.Example.Q2
+      QueLam.Example.Q3
       QueLam.Example.OrderDB
       QueLam.Example.TestQ1
       QueLam.Example.TestQ2
