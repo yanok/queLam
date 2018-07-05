@@ -40,8 +40,9 @@ type HasT t schema r =
   , KnownNat (SchemaSize schema)
   , KnownNat (SchemaIdx t schema))
 
-infix 5 =%
-infixl 2 @%
+infixl 1 $$
+infix 4 =%
+infixl 5 @%
 infixl 8 .%
 infixr 2 &%
 infixl 7 *%
