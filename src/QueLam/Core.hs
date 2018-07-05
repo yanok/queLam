@@ -7,6 +7,7 @@
 {-# LANGUAGE ScopedTypeVariables    #-}
 {-# LANGUAGE TypeFamilies           #-}
 {-# LANGUAGE TypeOperators          #-}
+{-# LANGUAGE UndecidableInstances   #-}
 module QueLam.Core where
 
 import           Data.Proxy
@@ -14,13 +15,21 @@ import           GHC.TypeLits
 import           SuperRecord
 
 -- Implementation of Suzuki, Kiselyov and Kameyama paper
-type family SchemaIdx (t :: Symbol) (schema :: [(Symbol, [*])]) :: Nat where
-  SchemaIdx t ('(t, r) ': rs) = 0
-  SchemaIdx t1 ('(t2, r) ': rs) = SchemaIdx t1 rs
 
+
+-- type level stuff for schema
+-- the goal is to match superrecord, so we could use
+-- records to represent DB in R representation
 type family SchemaSize (schema :: [(Symbol, [*])]) :: Nat where
   SchemaSize '[] = 0
-  SchemaSize (_ ': rs) = SchemaSize rs
+  SchemaSize (_ ': rs) = 1 + SchemaSize rs
+
+type family SchemaIdxH (i :: Nat) (t :: Symbol) (schema :: [(Symbol, [*])]) :: Nat where
+  SchemaIdxH idx t ('(t, r) ': rs) = idx
+  SchemaIdxH idx t1 ('(t2, r) ': rs) = SchemaIdxH (1 + idx) t1 rs
+  SchemaIdxH idx t '[] = TypeError ( 'Text "Could not find table " ':<>: 'Text t :<>: 'Text " in schema")
+
+type SchemaIdx t schema = SchemaSize schema - SchemaIdxH 0 t schema - 1
 
 type family SchemaTys (t :: Symbol) (schema :: [(Symbol, [*])]) :: [*] where
   SchemaTys t ('(t, r) ': rs) = r
