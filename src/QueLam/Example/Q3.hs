@@ -22,6 +22,7 @@ q3 ::
   , HasT "orders" schema order
   , HasT "products" schema prod
   , Has "oid" (Sort order) Int
+  , Has "pid" (Sort order) Int
   , Has "qty" (Sort order) Int
   , Has "pid" (Sort prod) Int
   , Has "name" (Sort prod) String
