@@ -18,8 +18,8 @@ orderDB = #orders :=
   [ #oid := 1 & #pid := 1 & #qty := 5 & rnil
   , #oid := 1 & #pid := 2 & #qty := 5 & rnil
   , #oid := 1 & #pid := 4 & #qty := 2 & rnil
-  , #oid := 1 & #pid := 5 & #qty := 10 & rnil
-  --, #oid := 2 & #pid := 6 & #qty := 20 & rnil
+  , #oid := 2 & #pid := 5 & #qty := 10 & rnil
+  , #oid := 2 & #pid := 6 & #qty := 20 & rnil
   , #oid := 3 & #pid := 2 & #qty := 50 & rnil
   ] &
   #products :=
