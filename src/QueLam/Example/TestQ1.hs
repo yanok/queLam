@@ -10,9 +10,13 @@ import           QueLam.Core
 import           QueLam.Example.OrderDB
 import           QueLam.Example.Q1
 import           QueLam.R
+import           QueLam.P
 
-testQ1 :: R OrderDBSchema (Int -> [Record OrderTable])
-testQ1 = q1 orderDB
+testQ1R :: R OrderDBSchema (Int -> [Record OrderTable])
+testQ1R = q1 orderDB
+
+testQ1P :: P OrderDBSchema (Int -> [Record OrderTable])
+testQ1P = q1 ()
 
 testO :: R OrderDBSchema ([Record OrderTable])
 testO = table orderDB #orders

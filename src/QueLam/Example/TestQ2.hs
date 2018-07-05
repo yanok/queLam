@@ -9,6 +9,10 @@ import           QueLam.Core
 import           QueLam.Example.OrderDB
 import           QueLam.Example.Q2
 import           QueLam.R
+import           QueLam.P
 
-testQ2 :: R OrderDBSchema (Record OrderTable -> [Record '[ "pid" := Int, "name" := String, "sale" := Int]])
-testQ2 = q2 orderDB
+testQ2R :: R OrderDBSchema (Record OrderTable -> [Record '[ "pid" := Int, "name" := String, "sale" := Int]])
+testQ2R = q2 orderDB
+
+testQ2P :: P OrderDBSchema (Record OrderTable -> [Record '[ "pid" := Int, "name" := String, "sale" := Int]])
+testQ2P = q2 ()
