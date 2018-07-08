@@ -10,18 +10,18 @@ import           SuperRecord
 import           QueLam.Core
 
 
-data AnnRepr repr (schema :: [(Symbol, [*])]) a where
-  Empty :: AnnRepr repr schema [a]
-  Unknown :: repr schema a -> AnnRepr repr schema a
+data LNil repr (schema :: [(Symbol, [*])]) a where
+  Empty :: LNil repr schema [a]
+  Unknown :: repr schema a -> LNil repr schema a
 
-dyn :: Symantics repr => AnnRepr repr schema a -> repr schema a
+dyn :: Symantics repr => LNil repr schema a -> repr schema a
 dyn Empty       = nil
 dyn (Unknown x) = x
 
 
-instance Symantics repr => Symantics (AnnRepr repr) where
-  type Obs (AnnRepr repr) a = Obs repr a
-  type Handle (AnnRepr repr) schema = Handle repr schema
+instance Symantics repr => Symantics (LNil repr) where
+  type Obs (LNil repr) a = Obs repr a
+  type Handle (LNil repr) schema = Handle repr schema
   int n = Unknown $ int n
   bool b = Unknown $ bool b
   string s = Unknown $ string s
