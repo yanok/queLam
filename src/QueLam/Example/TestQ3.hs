@@ -15,6 +15,7 @@ import           QueLam.Optimize.ForFor
 import           QueLam.Optimize.ForWhere
 import           QueLam.Optimize.ForYield
 import           QueLam.Optimize.WhereFor
+import           QueLam.Optimize.WhereWhere
 import           QueLam.Optimize.LNil
 
 testQ3 :: Symantics repr
