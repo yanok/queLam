@@ -3,11 +3,9 @@
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE KindSignatures        #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE TypeFamilies          #-}
 module QueLam.Optimize.LNil where
 
 import           GHC.TypeLits
-import           SuperRecord
 
 import           QueLam.Core
 
