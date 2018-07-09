@@ -56,6 +56,8 @@ instance Symantics P where
     parenthesize (l > 4) $ e1 n 5 False <+> "==" <+> e2 n 5 False
   (P e1) *% (P e2) = P $ \n l _ ->
     parenthesize (l > 7) $ e1 n 7 False <+> "*" <+> e2 n 8 False
+  (P e1) &&% (P e2) = P $ \n l _ ->
+    parenthesize (l > 3) $ e1 n 3 False <+> "&&" <+> e2 n 4 False
   (P e) .% lbl = P $ \n l _ ->
     e n 5 False <> dot <> pretty (symbolVal lbl)
   rnil' = P $ \_ _ isR -> if isR then mempty else "<>"

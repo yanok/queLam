@@ -49,6 +49,7 @@ instance Symantics R where
   (R e1) @% (R e2) = R $ e1 ++ e2
   (R e1) =% (R e2) = R $ e1 == e2
   (R e1) *% (R e2) = R $ e1 * e2
+  (R e1) &&% (R e2) = R $ e1 && e2
   (R e) .% l = R $ get l e
   rnil' = R rnil
   (l := (R x)) &% (R r) = R (l := x & r)

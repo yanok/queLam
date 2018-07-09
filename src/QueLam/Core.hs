@@ -55,6 +55,7 @@ infixl 5 @%
 infixl 8 .%
 infixr 2 &%
 infixl 7 *%
+infixl 3 &&%
 
 class Symantics repr where
   type Obs repr a :: *
@@ -116,6 +117,10 @@ class Symantics repr where
   default (*%) :: (RR t repr', Symantics repr', repr ~ t repr', Num a)
                => repr schema a -> repr schema a -> repr schema a
   x *% y = fwd $ bwd x *% bwd y
+  (&&%)  :: repr schema Bool -> repr schema Bool -> repr schema Bool
+  default (&&%) :: (RR t repr', Symantics repr', repr ~ t repr')
+                => repr schema Bool -> repr schema Bool -> repr schema Bool
+  x &&% y = fwd $ bwd x &&% bwd y
   (.%)   :: (KnownSymbol l, Has l rs t)
          => repr schema (Rec rs) -> FldProxy l -> repr schema t
   default (.%) :: ( RR t repr', Symantics repr', repr ~ t repr'
