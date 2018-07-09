@@ -28,6 +28,7 @@ library
       QueLam.R
       QueLam.P
       QueLam.Optimize.LNil
+      QueLam.Optimize.ForFor
       QueLam.Example.Q1
       QueLam.Example.Q2
       QueLam.Example.Q3
