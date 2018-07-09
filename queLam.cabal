@@ -32,6 +32,7 @@ library
       QueLam.Optimize.ForFor
       QueLam.Optimize.ForWhere
       QueLam.Optimize.ForYield
+      QueLam.Optimize.WhereFor
       QueLam.Example.Q1
       QueLam.Example.Q2
       QueLam.Example.Q3
