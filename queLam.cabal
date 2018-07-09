@@ -27,6 +27,7 @@ library
       QueLam.Core
       QueLam.R
       QueLam.P
+      QueLam.Optimize.AbsBeta
       QueLam.Optimize.LNil
       QueLam.Optimize.ForFor
       QueLam.Example.Q1
