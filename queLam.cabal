@@ -30,6 +30,7 @@ library
       QueLam.Optimize.AbsBeta
       QueLam.Optimize.LNil
       QueLam.Optimize.ForFor
+      QueLam.Optimize.ForWhere
       QueLam.Example.Q1
       QueLam.Example.Q2
       QueLam.Example.Q3
