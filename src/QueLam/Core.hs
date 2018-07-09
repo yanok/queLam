@@ -46,6 +46,9 @@ class RR t (repr :: [(Symbol, [*])] -> * -> *) where
   fwd :: repr schema a -> t repr schema a
   bwd :: t repr schema a -> repr schema a
 
+type family Peel (repr :: [(Symbol, [*])] -> * -> *) :: [(Symbol, [*])] -> * -> * where
+  Peel (t repr) = repr
+
 infixl 1 $$
 infix 4 =%
 infixl 5 @%
@@ -55,7 +58,11 @@ infixl 7 *%
 
 class Symantics repr where
   type Obs repr a :: *
+  type Obs repr a = Obs (Peel repr) a
+
   type Handle repr (schema :: [(Symbol, [*])]) :: *
+  type Handle repr schema = Handle (Peel repr) schema
+
   int    :: Int    -> repr schema Int
   default int :: (RR t repr', Symantics repr', repr ~ t repr')
               => Int -> repr schema Int
@@ -144,7 +151,20 @@ class Symantics repr where
   l := x &% r = fwd $ l := bwd x &% bwd r
   table  :: (KnownSymbol t, HasT t schema r)
          => Handle repr schema -> FldProxy t -> repr schema [Record r]
+  default table :: ( RR t repr'
+                   , Symantics repr'
+                   , repr ~ t repr'
+                   , Handle repr schema ~ Handle repr' schema
+                   , KnownSymbol tbl, HasT tbl schema r)
+                => Handle repr schema -> FldProxy tbl -> repr schema [Record r]
+  table h t = fwd $ table h t
   observe :: repr schema a -> Obs repr a
+  default observe :: ( RR t repr'
+                     , Symantics repr'
+                     , repr ~ t repr'
+                     , Obs repr a ~ Obs repr' a)
+                  => repr schema a -> Obs repr a
+  observe = observe . bwd
 
 compose :: Symantics repr => repr schema ((a -> [b]) -> (b -> [c]) -> (a -> [c]))
 compose = lam $ \q -> lam $ \r -> lam $ \x -> for (q $$ x) $ \y -> r $$ y

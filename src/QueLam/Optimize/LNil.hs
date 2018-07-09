@@ -26,10 +26,6 @@ instance Symantics repr => RR LNil repr where
   bwd = dyn
 
 instance Symantics repr => Symantics (LNil repr) where
-  type Obs (LNil repr) a = Obs repr a
-  type Handle (LNil repr) schema = Handle repr schema
   nil = Empty
   Empty @% y = y
   (Unknown x) @% y = Unknown $ x @% dyn y
-  table h t = Unknown $ table h t
-  observe = observe . dyn
