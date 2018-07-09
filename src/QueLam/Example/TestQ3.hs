@@ -13,6 +13,7 @@ import           QueLam.P
 import           QueLam.Optimize.AbsBeta
 import           QueLam.Optimize.ForFor
 import           QueLam.Optimize.ForWhere
+import           QueLam.Optimize.ForYield
 import           QueLam.Optimize.LNil
 
 testQ3 :: Symantics repr
