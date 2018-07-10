@@ -1,17 +1,27 @@
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE KindSignatures    #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeFamilies      #-}
+{-# LANGUAGE ConstraintKinds     #-}
+{-# LANGUAGE DataKinds           #-}
+{-# LANGUAGE FlexibleContexts    #-}
+{-# LANGUAGE InstanceSigs        #-}
+{-# LANGUAGE KindSignatures      #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RankNTypes          #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications    #-}
+{-# LANGUAGE TypeFamilies        #-}
 module QueLam.P where
 
 import           Data.Char
+import           Data.Constraint
+import           Data.Functor.Const
+import           Data.Row.Internal
+import           Data.Row.Records          hiding (map, zip)
+import qualified Data.Row.Records          as R
 import           Data.Text.Prettyprint.Doc
 import           GHC.TypeLits
-import           SuperRecord
 
 import           QueLam.Core
 
-newtype P (schema :: [(Symbol, [*])]) a = P { getP :: Int -> Int -> Bool -> Doc () }
+newtype P (schema :: Row (Row *)) a = P { getP :: Int -> Int -> Doc () }
 
 varNames :: Int -> String
 varNames 0 = "x"
@@ -21,52 +31,56 @@ varNames n | ord 'a' + n < ord 'z' = chr (ord 'a' + n - 3) : []
            | otherwise   = "x" ++ show (ord 'a' + n - ord 'z')
 
 parenthesize :: Bool -> Doc a -> Doc a
-parenthesize True = parens
+parenthesize True  = parens
 parenthesize False = id
 
 parenthesize' :: Bool -> (Int -> Doc a) -> Int -> Doc a
-parenthesize' True e l = parens (e 0)
+parenthesize' True e l  = parens (e 0)
 parenthesize' False e l = e l
 
+type IsConstDoc a = a ~ Const (Doc ())
 instance Symantics P where
   type Obs P a = Doc ()
   type Handle P schema = ()
-  int i = P $ \_ _ _ -> pretty i
-  bool b = P $ \_ _ _ -> pretty b
-  string s = P $ \_ _ _ -> viaShow s
-  lam f = P $ \n l _ -> let v = pretty $ varNames n in
+  int i = P $ \_ _ -> pretty i
+  bool b = P $ \_ _ -> pretty b
+  string s = P $ \_ _ -> viaShow s
+  lam f = P $ \n l -> let v = pretty $ varNames n in
     parenthesize (l > 0) $
     backslash <> v <> dot <+>
-    getP (f $ P $ \_ _ _ -> v) (n+1) 0 False
-  (P e1) $$ (P e2) = P $ \n l _ -> parenthesize (l > 10) $
-    e1 n 10 False <+> e2 n 11 False
-  for (P e) f = P $ \n l _ ->
+    getP (f $ P $ \_ _ -> v) (n+1) 0
+  (P e1) $$ (P e2) = P $ \n l -> parenthesize (l > 10) $
+    e1 n 10 <+> e2 n 11
+  for (P e) f = P $ \n l ->
     let v = pretty $ varNames n in
       parenthesize (l > 0) $ align $ vsep
-      [ "for" <+> parens (v <+> "<-" <+> e n 0 False)
-      , getP (f $ P $ \_ _ _ -> v) (n+1) 0 False ]
-  where' (P c) (P e) = P $ \n l _ -> align $ vsep
-    [ "where" <+> c n 100 False
-    , e n 0 False ]
-  yield (P e) = P $ \n _ _ -> "yield" <+> e n 0 False
-  nil = P $ \_ _ _ -> "[]"
-  (P e1) @% (P e2) = P $ \n l _ ->
-    parenthesize (l > 5) $ e1 n 5 False <+> "@" <+> e2 n 6 False
-  (P e1) =% (P e2) = P $ \n l _ ->
-    parenthesize (l > 4) $ e1 n 5 False <+> "==" <+> e2 n 5 False
-  (P e1) *% (P e2) = P $ \n l _ ->
-    parenthesize (l > 7) $ e1 n 7 False <+> "*" <+> e2 n 8 False
-  (P e1) &&% (P e2) = P $ \n l _ ->
-    parenthesize (l > 3) $ e1 n 3 False <+> "&&" <+> e2 n 4 False
-  (P e) .% lbl = P $ \n l _ ->
-    e n 5 False <> dot <> pretty (symbolVal lbl)
-  rnil' = P $ \_ _ isR -> if isR then mempty else "<>"
-  (lbl := P e1) &% (P e2) = P $ \n l isR ->
-    let contents = pretty (symbolVal lbl) <+> "=" <+> e1 n 0 False <>
-          e2 n 0 True in
-      if isR then comma <+> contents else angles contents
-  table _ t = P $ \_ _ _ -> "table" <+> pretty (symbolVal t)
-  observe x = getP x 0 0 False
+      [ "for" <+> parens (v <+> "<-" <+> e n 0)
+      , getP (f $ P $ \_ _ -> v) (n+1) 0 ]
+  where' (P c) (P e) = P $ \n l -> align $ vsep
+    [ "where" <+> c n 100
+    , e n 0 ]
+  yield (P e) = P $ \n _ -> "yield" <+> e n 0
+  nil = P $ \_ _ -> "[]"
+  (P e1) @% (P e2) = P $ \n l ->
+    parenthesize (l > 5) $ e1 n 5 <+> "@" <+> e2 n 6
+  (P e1) =% (P e2) = P $ \n l ->
+    parenthesize (l > 4) $ e1 n 5 <+> "==" <+> e2 n 5
+  (P e1) *% (P e2) = P $ \n l ->
+    parenthesize (l > 7) $ e1 n 7 <+> "*" <+> e2 n 8
+  (P e1) &&% (P e2) = P $ \n l ->
+    parenthesize (l > 3) $ e1 n 3 <+> "&&" <+> e2 n 4
+  (P e) .% lbl = P $ \n l ->
+    e n 5 <> dot <> pretty (symbolVal lbl)
+  rcrd :: forall schema row. WellBehaved row
+       => Rec (Map (P schema) row) -> P schema (Rec row)
+  rcrd r = P $ \n l ->
+    let r' = transform' @row @(P schema) (\p -> Const [getP p n l]) r
+        vs = getConst $ R.sequence @(Const [Doc ()]) @row r'
+        ls = labels' @row
+    in
+    angles $ sep $ punctuate comma (map (\(l,v) -> l <+> "=" <+> v) $ zip ls vs)
+  table _ t = P $ \_ _ -> "table" <+> pretty (symbolVal t)
+  observe x = getP x 0 0
 
 -- test :: P '[] (Int -> (Int -> Int) -> Int)
 -- test = lam $ \x -> lam $ \f -> f $$ (f $$ x)

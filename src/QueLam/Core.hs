@@ -106,7 +106,7 @@ class Symantics (repr :: Row (Row *) -> * -> *) where
                   , KnownSymbol l, rs .! l ≈ a)
                => repr schema (Rec rs) -> Label l -> repr schema a
   x .% l = fwd $ bwd x .% l
-  rcrd :: Rec (Map (repr schema) r) -> repr schema (Rec r)
+  rcrd :: WellBehaved r => Rec (Map (repr schema) r) -> repr schema (Rec r)
   default rcrd :: forall schema row t repr'
                 . (RR t repr', Symantics repr', repr ~ t repr', WellBehaved row)
                => Rec (Map (repr schema) row) -> repr schema (Rec row)
