@@ -10,14 +10,14 @@
 module QueLam.Example.Q1 where
 
 import           Data.Proxy
+import           Data.Row.Records
 import           QueLam.Core
-import           SuperRecord
 
 q1 ::
   ( Symantics repr
-  , HasT "orders" schema order
-  , Has "oid" (Sort order) Int) -- need to say Sort...
-  => Handle repr schema -> repr schema (Int -> [Record order])
+  , schema .! "orders" ≈ order
+  , order .! "oid" ≈ Int)
+  => Handle repr schema -> repr schema (Int -> [Rec order])
 q1 h = lam $ \xoid ->
   for (table h #orders) $ \o ->
     where' (o .% #oid =% xoid) $

@@ -40,8 +40,7 @@ packages:
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)
 extra-deps:
-- git: git@github.com:yanok/superrecord.git
-  commit: 290e8e0eaad6dee24e7093d246cc072b515aeec5
+- row-types-0.2.3.0
 
 
 # Override default flag values for local packages and extra-deps
