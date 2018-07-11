@@ -28,8 +28,9 @@ library
       QueLam.Core
       QueLam.R
       QueLam.P
-      QueLam.Optimize.AbsBeta
       QueLam.Optimize.LNil
+      QueLam.Optimize.AbsBeta
+      QueLam.Optimize.RecordBeta
       QueLam.Optimize.ForFor
       QueLam.Optimize.ForWhere
       QueLam.Optimize.ForYield
