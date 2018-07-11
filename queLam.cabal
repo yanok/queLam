@@ -34,11 +34,13 @@ library
       QueLam.Optimize.ForEmpty1
       QueLam.Optimize.ForFor
       QueLam.Optimize.ForUnionAll1
+      QueLam.Optimize.ForUnionAll2
       QueLam.Optimize.ForWhere
       QueLam.Optimize.ForYield
       QueLam.Optimize.WhereFor
       QueLam.Optimize.WhereTrue
       QueLam.Optimize.WhereFalse
+      QueLam.Optimize.WhereUnion
       QueLam.Optimize.WhereWhere
       QueLam.Example.Q1
       QueLam.Example.Q2
