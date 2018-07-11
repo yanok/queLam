@@ -10,6 +10,7 @@ import           QueLam.Example.Q3
 import           QueLam.R
 import           QueLam.P
 import           QueLam.Optimize.AbsBeta
+import           QueLam.Optimize.RecordBeta
 import           QueLam.Optimize.ForFor
 import           QueLam.Optimize.ForWhere
 import           QueLam.Optimize.ForYield
@@ -22,6 +23,12 @@ testQ3 :: Symantics repr
        -> repr OrderDBSchema
                (Int -> [Rec ("pid" .== Int .+ "name" .== String .+ "sale" .== Int)])
 testQ3 = q3
+
+testQ3' :: Symantics repr
+        => Handle repr OrderDBSchema
+        -> repr OrderDBSchema
+                (Int -> [Int])
+testQ3' = q3'
 
 testQ3R :: R OrderDBSchema
              (Int -> [Rec ("pid" .== Int .+ "name" .== String .+ "sale" .== Int)])

@@ -30,3 +30,18 @@ q3 ::
   => Handle repr schema
   -> repr schema (Int -> [Rec ("pid" .== Int .+ "name" .== String .+ "sale" .== Int)])
 q3 h = compose $$ q1 h $$ q2 h
+
+q3' ::
+  forall repr schema prod order.
+  ( Symantics repr
+  , schema .! "orders" ≈ order
+  , schema .! "products" ≈ prod
+  , order .! "oid" ≈ Int
+  , order .! "pid" ≈ Int
+  , order .! "qty" ≈ Int
+  , prod .! "pid" ≈ Int
+  , prod .! "name" ≈ String
+  , prod .! "price" ≈ Int)
+  => Handle repr schema
+  -> repr schema (Int -> [Int])
+q3' h = lam $ \o -> for (q3 h $$ o) $ \ r -> yield $ r .% #sale
