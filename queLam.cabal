@@ -31,6 +31,7 @@ library
       QueLam.Optimize.LNil
       QueLam.Optimize.AbsBeta
       QueLam.Optimize.RecordBeta
+      QueLam.Optimize.ForEmpty1
       QueLam.Optimize.ForFor
       QueLam.Optimize.ForWhere
       QueLam.Optimize.ForYield
