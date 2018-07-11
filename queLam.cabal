@@ -37,6 +37,8 @@ library
       QueLam.Optimize.ForWhere
       QueLam.Optimize.ForYield
       QueLam.Optimize.WhereFor
+      QueLam.Optimize.WhereTrue
+      QueLam.Optimize.WhereFalse
       QueLam.Optimize.WhereWhere
       QueLam.Example.Q1
       QueLam.Example.Q2
