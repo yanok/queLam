@@ -33,6 +33,7 @@ library
       QueLam.Optimize.RecordBeta
       QueLam.Optimize.ForEmpty1
       QueLam.Optimize.ForFor
+      QueLam.Optimize.ForUnionAll1
       QueLam.Optimize.ForWhere
       QueLam.Optimize.ForYield
       QueLam.Optimize.WhereFor
