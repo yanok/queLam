@@ -27,5 +27,5 @@ instance Symantics repr => RR ForFor repr where
 
 instance Symantics repr => Symantics (ForFor repr) where
   for xs@Unknown{} f = For xs f
-  for (For ys g) f = fwd $ for (bwd ys) $ \y ->
-                             for (bwd $ g $ fwd y) $ \x -> bwd $ f $ fwd x
+  for (For ys g) f = for ys $ \y ->
+                            for (g y) $ \x -> f x
