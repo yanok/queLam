@@ -5,12 +5,12 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 module QueLam.Optimize.WhereFor where
 
-import           GHC.TypeLits
+import           Data.Row.Records
 
 import           QueLam.Core
 
 
-data WhereFor repr (schema :: [(Symbol, [*])]) a where
+data WhereFor repr (schema :: Row (Row *)) a where
   For :: WhereFor repr schema [a]
       -> (WhereFor repr schema a -> WhereFor repr schema [b])
       -> WhereFor repr schema [b]

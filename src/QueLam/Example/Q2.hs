@@ -9,8 +9,8 @@
 {-# LANGUAGE TypeOperators         #-}
 module QueLam.Example.Q2 where
 
-import Data.Row.Records
-import           Data.Proxy
+import           Data.Row.Records
+
 import           QueLam.Core
 
 q2 ::

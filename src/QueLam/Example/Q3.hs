@@ -9,8 +9,8 @@
 {-# LANGUAGE TypeOperators         #-}
 module QueLam.Example.Q3 where
 
-import           Data.Proxy
-import           Data.Row.Records hiding (compose)
+import           Data.Row.Records  hiding (compose)
+
 import           QueLam.Core
 
 import           QueLam.Example.Q1

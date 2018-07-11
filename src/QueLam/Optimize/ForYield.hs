@@ -5,12 +5,12 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 module QueLam.Optimize.ForYield where
 
-import           GHC.TypeLits
+import           Data.Row.Records
 
 import           QueLam.Core
 
 
-data ForYield repr (schema :: [(Symbol, [*])]) a where
+data ForYield repr (schema :: Row (Row *)) a where
   Yield :: ForYield repr schema a
         -> ForYield repr schema [a]
   Unknown :: repr schema a -> ForYield repr schema a

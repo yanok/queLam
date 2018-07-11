@@ -5,12 +5,12 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 module QueLam.Optimize.LNil where
 
-import           GHC.TypeLits
+import           Data.Row.Records
 
 import           QueLam.Core
 
 
-data LNil repr (schema :: [(Symbol, [*])]) a where
+data LNil repr (schema :: Row (Row *)) a where
   Empty :: LNil repr schema [a]
   Unknown :: repr schema a -> LNil repr schema a
 

@@ -1,4 +1,3 @@
-{-# LANGUAGE ConstraintKinds     #-}
 {-# LANGUAGE DataKinds           #-}
 {-# LANGUAGE FlexibleContexts    #-}
 {-# LANGUAGE InstanceSigs        #-}
@@ -11,7 +10,6 @@
 module QueLam.P where
 
 import           Data.Char
-import           Data.Constraint
 import           Data.Functor.Const
 import           Data.Row.Internal
 import           Data.Row.Records          hiding (map, zip)
@@ -34,11 +32,6 @@ parenthesize :: Bool -> Doc a -> Doc a
 parenthesize True  = parens
 parenthesize False = id
 
-parenthesize' :: Bool -> (Int -> Doc a) -> Int -> Doc a
-parenthesize' True e l  = parens (e 0)
-parenthesize' False e l = e l
-
-type IsConstDoc a = a ~ Const (Doc ())
 instance Symantics P where
   type Obs P a = Doc ()
   type Handle P schema = ()
@@ -56,7 +49,7 @@ instance Symantics P where
       parenthesize (l > 0) $ align $ vsep
       [ "for" <+> parens (v <+> "<-" <+> e n 0)
       , getP (f $ P $ \_ _ -> v) (n+1) 0 ]
-  where' (P c) (P e) = P $ \n l -> align $ vsep
+  where' (P c) (P e) = P $ \n _ -> align $ vsep
     [ "where" <+> c n 100
     , e n 0 ]
   yield (P e) = P $ \n _ -> "yield" <+> e n 0
@@ -69,16 +62,17 @@ instance Symantics P where
     parenthesize (l > 7) $ e1 n 7 <+> "*" <+> e2 n 8
   (P e1) &&% (P e2) = P $ \n l ->
     parenthesize (l > 3) $ e1 n 3 <+> "&&" <+> e2 n 4
-  (P e) .% lbl = P $ \n l ->
+  (P e) .% lbl = P $ \n _ ->
     e n 5 <> dot <> pretty (symbolVal lbl)
   rcrd :: forall schema row. WellBehaved row
        => Rec (Map (P schema) row) -> P schema (Rec row)
-  rcrd r = P $ \n l ->
-    let r' = transform' @row @(P schema) (\p -> Const [getP p n l]) r
+  rcrd r = P $ \n _ ->
+    let r' = transform' @row @(P schema) (\p -> Const [getP p n 0]) r
         vs = getConst $ R.sequence @(Const [Doc ()]) @row r'
         ls = labels' @row
     in
-    angles $ sep $ punctuate comma (map (\(l,v) -> l <+> "=" <+> v) $ zip ls vs)
+    align $ encloseSep langle rangle comma
+    (map (\(l,v) -> l <+> "=" <+> v) $ zip ls vs)
   table _ t = P $ \_ _ -> "table" <+> pretty (symbolVal t)
   observe x = getP x 0 0
 

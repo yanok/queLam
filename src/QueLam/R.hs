@@ -1,36 +1,38 @@
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE DeriveFunctor         #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE InstanceSigs          #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeApplications #-}
-{-# LANGUAGE InstanceSigs #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE PolyKinds             #-}
+{-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE TypeApplications      #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE UndecidableInstances  #-}
 module QueLam.R where
 
 import           Data.Coerce
-import Data.Type.Equality
+import           Data.Constraint
+import           Data.Functor.Compose
 import           Data.Functor.Identity
-import GHC.TypeLits
-import           SuperRecord
-import Data.Constraint
-import Unsafe.Coerce
+import           Data.Row.Extra
+import           Data.Row.Records
+import qualified Data.Row.Records      as R
+import           Data.Type.Equality
+import           GHC.TypeLits
+import           Unsafe.Coerce
 
 import           QueLam.Core
 
-newtype R (schema :: [(Symbol, [*])]) a = R { getR :: a }
+newtype R (schema :: Row (Row *)) a = R { getR :: a }
+  deriving (Functor)
 
-type family DB' (schema :: [(Symbol, [*])]) where
-  DB' '[] = '[]
-  DB' ('(l, r) ': fs) = l := [Rec r] ': DB' fs
+instance Applicative (R schema) where
+  pure = R
+  R f <*> R x = R $ f x
 
-type DB schema = Record (DB' schema)
-
--- recSizeOfDB :: forall schema. RecSize (DB' schema) :~: RecSize schema
--- recSizeOfDB = undefined
+type DB schema = Rec (Map (Compose [] Rec) schema)
 
 instance Symantics R where
   type Obs R a = a
@@ -50,10 +52,9 @@ instance Symantics R where
   (R e1) =% (R e2) = R $ e1 == e2
   (R e1) *% (R e2) = R $ e1 * e2
   (R e1) &&% (R e2) = R $ e1 && e2
-  (R e) .% l = R $ get l e
-  rnil' = R rnil
-  (l := (R x)) &% (R r) = R (l := x & r)
-  table  :: forall t schema r . HasT t schema r => Handle R schema -> FldProxy t -> R schema [Record r]
-  table h t = R $ withDict (unsafeCoerce (Dict :: Dict (HasT t schema r)) :: Dict (Has t (Sort (DB' schema)) [Record r]))
-            $ get t h
+  (R e) .% l = R $ e .! l
+  rcrd = R.sequence
+  table :: forall t schema r . (KnownSymbol t, schema .! t ≈ r)
+        => Handle R schema -> Label t -> R schema [Rec r]
+  table h t = R $ getCompose $ h .! t \\ mapHas @(Compose [] Rec) @schema @t @r
   observe = coerce

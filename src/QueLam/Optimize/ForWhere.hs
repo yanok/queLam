@@ -5,12 +5,12 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 module QueLam.Optimize.ForWhere where
 
-import           GHC.TypeLits
+import           Data.Row.Records
 
 import           QueLam.Core
 
 
-data ForWhere repr (schema :: [(Symbol, [*])]) a where
+data ForWhere repr (schema :: Row (Row *)) a where
   Where :: ForWhere repr schema Bool
         -> ForWhere repr schema [a]
         -> ForWhere repr schema [a]

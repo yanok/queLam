@@ -5,18 +5,18 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 module QueLam.Optimize.AbsBeta where
 
-import           GHC.TypeLits
+import           Data.Row.Records
 
 import           QueLam.Core
 
 
-data AbsBeta repr (schema :: [(Symbol, [*])]) a where
+data AbsBeta repr (schema :: Row (Row *)) a where
   Lam :: (AbsBeta repr schema a -> AbsBeta repr schema b)
       -> AbsBeta repr schema (a -> b)
   Unknown :: repr schema a -> AbsBeta repr schema a
 
 absBeta :: Symantics repr => AbsBeta repr schema a -> repr schema a
-absBeta (Lam f)  = lam $ \x -> absBeta $ f $ Unknown x
+absBeta (Lam f)     = lam $ \x -> absBeta $ f $ Unknown x
 absBeta (Unknown x) = x
 
 

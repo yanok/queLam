@@ -1,18 +1,20 @@
-{-# LANGUAGE DataKinds            #-}
-{-# LANGUAGE TypeOperators        #-}
+{-# LANGUAGE DataKinds     #-}
+{-# LANGUAGE TypeOperators #-}
 module QueLam.Example.TestQ2 where
 
-import           GHC.TypeLits
-import           SuperRecord
+import           Data.Row.Records
 
-import           QueLam.Core
 import           QueLam.Example.OrderDB
 import           QueLam.Example.Q2
-import           QueLam.R
 import           QueLam.P
+import           QueLam.R
 
-testQ2R :: R OrderDBSchema (Record OrderTable -> [Record '[ "pid" := Int, "name" := String, "sale" := Int]])
+testQ2R :: R OrderDBSchema
+             (Rec OrderTable ->
+              [Rec ("pid" .== Int .+ "name" .== String .+ "sale" .== Int)])
 testQ2R = q2 orderDB
 
-testQ2P :: P OrderDBSchema (Record OrderTable -> [Record '[ "pid" := Int, "name" := String, "sale" := Int]])
+testQ2P :: P OrderDBSchema
+             (Rec OrderTable ->
+              [Rec ("pid" .== Int .+ "name" .== String .+ "sale" .== Int)])
 testQ2P = q2 ()

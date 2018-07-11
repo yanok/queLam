@@ -24,6 +24,7 @@ source-repository head
 library
   exposed-modules:
       Lib
+      Data.Row.Extra
       QueLam.Core
       QueLam.R
       QueLam.P
@@ -45,6 +46,7 @@ library
       Paths_queLam
   hs-source-dirs:
       src
+  ghc-options:         -Wall
   build-depends:
       base >=4.7 && <5,
       row-types,

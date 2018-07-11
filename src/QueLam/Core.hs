@@ -12,9 +12,7 @@
 {-# LANGUAGE UndecidableInstances   #-}
 module QueLam.Core where
 
-import           Data.Proxy
 import           Data.Row.Records
-import           GHC.TypeLits
 
 -- Implementation of Suzuki, Kiselyov and Kameyama paper
 
