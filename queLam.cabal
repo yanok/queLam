@@ -40,6 +40,7 @@ library
       QueLam.Optimize.WhereFor
       QueLam.Optimize.WhereTrue
       QueLam.Optimize.WhereFalse
+      QueLam.Optimize.WhereEmpty
       QueLam.Optimize.WhereUnion
       QueLam.Optimize.WhereWhere
       QueLam.Example.Q1
